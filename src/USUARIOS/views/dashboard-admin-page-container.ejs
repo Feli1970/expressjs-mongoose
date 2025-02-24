@@ -1,0 +1,678 @@
+<style>
+    .modal-body img {
+      display: block; /* Hace que la imagen sea un bloque y pueda centrarse */
+      max-width: 100%; /* Limita el ancho máximo al tamaño del contenedor */
+      max-height: 70vh; /* Limita la altura máxima para evitar que se salga de la pantalla */
+      margin: 0 auto; /* Centra la imagen horizontalmente */
+      object-fit: contain; /* Asegura que la imagen se escale correctamente */
+    }
+  </style>
+  
+  <!--begin::App Content Header-->
+  <div class="app-content-header">
+      <!--begin::Container-->
+      <div class="container-fluid">
+          <!--begin::Row-->
+          <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+              <div class="col-sm-6">
+                  <ol class="breadcrumb float-sm-end">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Dashboard admin</li>
+                  </ol>
+              </div>
+          </div>
+          <!--end::Row-->
+      </div>
+      <!--end::Container-->
+  </div>
+  <!--modal /. -->
+  
+  <!--modal ./ -->
+  <!--end::App Content Header-->
+  <!--begin::App Content-->
+  <div class="app-content">
+      <!--begin::Container-->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <!-- Ícono de búsqueda de Bootstrap Icons -->
+                  <i class="bi bi-search"></i>
+                </span>
+              </div>
+              <input type="text" id="busqueda_inversion_id" class="form-control" placeholder="Buscar usuario...">
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <!-- Select para tipos de estado -->
+            <div class="form-group">
+              <select id="tipo_estado_inversion_id" class="form-control">
+                <option value="todos">Todos los estados</option>
+                <option value="revision">Revisión</option>
+                <option value="activa">Activa</option>
+                <option value="rechazo">Rechazo</option>
+                <option value="terminada">Terminada</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <!-- Botón de búsqueda -->
+            <button onclick="getInversionesUsuarioORCodigo()" class="btn btn-primary">
+              Buscar
+            </button>
+          </div>
+        </div>
+
+          <!--begin::Row-->
+          <div class="row">
+              <!-- Start col -->
+              <div class="col-md-12 col-lg-6">
+                <div class="card mb-4">
+                  <div class="card-header">
+                    <h4 class="card-title">
+                      Usuarios rendimiento
+                    </h4>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body p-0">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th style="width: 10px">#</th>
+                          <th>Procentaje</th>
+                          <th>Documento</th>
+                          <th>Informacion Usuario</th>
+                          <th style="width: 40px" >Valor de inversion</th>
+                          <th >Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tablaBodyInversiones">
+                        <tr>
+                          <td>1.</td>
+                          <td>Update software</td>
+                          <td>
+                            <div class="progress progress-xs">
+                              <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                            </div>
+                          </td>
+                          <td><span class="badge bg-danger">55%</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- end col -->
+              <!-- Start col -->
+              <div class="col-md-12 col-lg-6">
+                  <div class="card mb-4">
+                    <div class="card-header">
+                      <h4 class="card-title">
+                        Usuarios
+                      </h4>
+                    </div>
+                    <div class="card-body p-0">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Estado</th>
+                            <th style="width: 100px">Valor Retirar</th>
+                            <th>Informacacion</th>
+                            <th >Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tablaBodyRetiros">
+                          <tr>
+                            <td>1.</td>
+                            <td>Update software</td>
+                            <td>
+                              <div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                              </div>
+                            </td>
+                            <td><span class="badge bg-danger">55%</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+              </div>
+              <!-- /.Start col -->
+          </div>
+          <!-- /.row (main row) -->
+  
+          <!-- modal formulario para crear inversion /. -->
+          <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+              <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                  <h5 class="modal-title" id="modalConfirmacionLabel"><i class="bi bi-plus-circle-fill text-primary"></i> Crear Inversión</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                  <!-- Spinner -->
+                  <div id="spinner" class="d-none text-center">
+                      <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Cargando...</span>
+                      </div>
+                      <p>Procesando...</p>
+                  </div>
+                  <!-- Formulario -->
+                  <form id="crearInversionForm">
+                      <div class="mb-3">
+                      <label for="monto" class="form-label">
+                          <i class="bi bi-cash-coin text-warning"></i> Monto de la Inversión
+                      </label>
+                      <input type="number" class="form-control" id="monto" name="monto" placeholder="Ingrese el monto" required>
+                      </div>
+                      <div class="mb-3">
+                      <label for="MetodoPago" class="form-label">
+                          <i class="bi bi-wallet2 text-info"></i> Método de Pago
+                      </label>
+                      <select class="form-select" id="MetodoPago" name="MetodoPago[tipo]" required>
+                          <option value="">Seleccione el método de pago</option>
+                          <option value="Nequi">Nequi</option>
+                          <option value="Cuenta Bancaria">Cuenta Bancaria</option>
+                          <option value="Otro">Otro</option>
+                      </select>
+                      </div>
+                      <div class="mb-3">
+                      <label for="comprobante" class="form-label">
+                          <i class="bi bi-upload text-primary"></i> Comprobante de Pago
+                      </label>
+                      <input type="file" class="form-control" id="comprobante" name="comprobante_foto_recibo_pago" accept="image/*">
+                      </div>
+                  </form>
+                  </div>
+                  <div class="modal-footer">
+                  <button onclick="crearInversion()" id="btn-crear-inversion-id" class="btn btn-primary">
+                      <i class="bi bi-check-circle"></i> Crear Inversión
+                  </button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                      <i class="bi bi-x-circle"></i> Cerrar
+                  </button>
+                  </div>
+              </div>
+              </div>
+          </div>
+          <!-- modal formulario para crear inversion ./ -->
+          <!-- listado de modals para abrir comprobante de pago /. -->
+          <div id="modalsComprobantesPagosUsuariosId">
+  
+          </div>
+          <!-- listado de modals para abrir comprobante de pago ./ -->
+      </div>
+      <!--end::Container-->
+  </div>
+  <!--end::App Content-->
+  
+  <!--scripts dev /. -->
+    <!-- bootstrap-icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+        // Función para formatear un número como pesos
+        const formatoPesos = (numero) => {
+        return `$${numero.toLocaleString('es-CO')}`;
+      };
+  
+      // Función para convertir fecha al formato "Lunes 12 / 2025"
+      const fechaFormatear = (fecha) => {
+        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const fechaObj = new Date(fecha);
+        const dia = diasSemana[fechaObj.getDay()];
+        const diaMes = fechaObj.getDate();
+        const anio = fechaObj.getFullYear();
+        return `${dia} ${diaMes} / ${anio}`;
+      };
+  
+      // Función para calcular si pasó un mes desde una fecha y aumentar el monto un 2%
+      const incrementoInversionMes = (fecha, monto) => {
+        const fechaObj = new Date(fecha);
+        const fechaActual = new Date();
+        
+        // Calcular la diferencia en meses
+        const diferenciaMeses = fechaActual.getMonth() - fechaObj.getMonth() 
+                              + (12 * (fechaActual.getFullYear() - fechaObj.getFullYear()));
+  
+        // Si pasó un mes o más, aumentar el monto un 2%
+        if (diferenciaMeses >= 1) {
+          const incremento = monto * 0.02; // 2% del monto
+          monto += incremento;
+        }
+        
+        return formatoPesos(monto); // Retornar el monto formateado
+      };
+  
+      // Ejemplo de uso
+      console.log(formatoPesos(1000000)); // $1,000,000
+      console.log(fechaFormatear('2025-12-12')); // Lunes 12 / 2025
+      console.log(incrementoInversionMes('2023-11-24', 1000000)); // $1,020,000 (si ha pasado más de un mes)
+      
+      const obtenerUsuarios = async () => {
+        try {
+            const response = await axios.get('/api/usuarios/admin');
+            const users = response.data;
+            //const tablaUsuarios = document.getElementById('tablaBodyUsuarios');
+            //let usersTable = ""
+            //users.forEach((user, index) => {
+            //    index ++
+            //    usersTable += `<h1>user - ${index}</h1>`
+            //});
+            //tablaUsuarios.innerHTML = usersTable;
+        } catch (error) {
+          console.error("Error al obtener inversiones:", error);
+        }
+      };
+
+      const getInversion = (inversion, index) => {
+        
+        // Mapeo de estados a badges
+        let estadoActual = {
+          'revision': `<span class="badge bg-warning">${inversion.estado}</span>`,
+          'activa': `<span class="badge bg-success">${inversion.estado}</span>`,
+          'rechazo': `<span class="badge bg-danger">${inversion.estado}</span>`,
+          'terminada': `<span class="badge bg-info">${inversion.estado}</span>`
+        };
+
+        // Fila de la tabla
+        let usersTable = `
+          <tr>
+            <td>${index}.</td>
+            <td>${inversion.cantidad_plazos_mes} meses</td>
+            <td>
+              ${estadoActual[inversion.estado]}
+              <button type="button" class="btn btn-sm btn-block btn-info" data-bs-toggle="modal" data-bs-target="#modalComprovantePagoUsuario${inversion._id}">Comprobante</button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-sm btn-block btn-info" data-bs-toggle="modal" data-bs-target="#modalInversionPorMeses${inversion._id}">Información Inversión</button>
+            </td>
+            <td>${inversion.usuarioId.nombre_completo} <br>- ${inversion.usuarioId.numero_identificacion}</td>
+            <td>${inversion.monto}</td>
+            <td>
+              <button onclick="aprovarInversion(this)" data-inversion-id="${inversion._id}" type="button" class="btn btn-sm btn-block btn-dark">Aprobar / Denegar</button>
+            </td>
+          </tr>
+        `;
+
+        // Modal de comprobante de pago
+        let modalsInversionesUsuarios = `
+          <!-- Modal Comprobante -->
+          <div class="modal fade" id="modalComprovantePagoUsuario${inversion._id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalComprovantePagoUsuario${inversion._id}Label" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="modalComprovantePagoUsuario${inversion._id}Label">Comprobante de Pago</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <img src="../../uploads/comprobantes/${inversion.usuarioId.authId}/${inversion.comprovante_foto_recibo_pago}" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Cards para cada mes de inversión
+        const meses_inverstidos = inversion.mes_valor_inversion.map((mes_inversion) => {
+          let icono_estado = {
+            "activa": `<i class="bi bi-check-circle-fill text-success"></i>`,
+            "revision": `<i class="bi bi-hourglass-split text-warning"></i>`,
+            "rechazo": `<i class="bi bi-x-circle-fill text-danger"></i>`,
+            "terminada": `<i class="bi bi-flag-fill text-primary"></i>`
+          };
+
+          let color_estado = {
+            "activa": "success",
+            "revision": "warning",
+            "rechazo": "danger",
+            "terminada": "primary"
+          };
+
+          return `
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 class="card-title">Mes: ${mes_inversion.mes}</h5>
+                    <p class="card-text">Valor: $${mes_inversion.valor}</p>
+                  </div>
+                  <div>
+                    ${icono_estado[mes_inversion.estado] || `<i class="bi bi-question-circle-fill text-secondary"></i>`}
+                    <span class="badge bg-${color_estado[mes_inversion.estado] || 'secondary'}">
+                      ${mes_inversion.estado}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        // Modal de inversiones por meses
+        modalsInversionesUsuarios += `
+          <!-- Modal Inversiones por Meses -->
+          <div class="modal fade" id="modalInversionPorMeses${inversion._id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalInversionPorMeses${inversion._id}Label" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h1 class="modal-title fs-5" id="modalInversionPorMeses${inversion._id}Label">
+                    <i class="bi bi-calendar-month"></i> Inversiones por Meses
+                  </h1>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                  <h4 class="mb-4">ID de Inversión: ${inversion._id}</h4>
+                  <div class="row">
+                    <div class="col-12">
+                      ${meses_inverstidos}
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        return { usersTable, modalsInversionesUsuarios };
+      };
+
+      // Esta funcion lo que hace es enviar parametros, para la busqueda 
+      // puede entrar nombre del usuario, codigo, identificaicon, etc ademas de eso tambien puede ir con estado o sin estado, 
+
+      const getInversionesUsuarioORCodigo = async () => {
+        let codeOrUser = document.getElementById('busqueda_inversion_id');
+        let tipoEstado = document.getElementById('tipo_estado_inversion_id');
+
+        console.log("Valor de búsqueda:", codeOrUser.value); // Depuración
+        console.log("Valor de estado:", tipoEstado.value); // Depuración
+
+        if (!codeOrUser.value.trim()) {
+          alert("Por favor, ingresa un valor de búsqueda.");
+          return;
+        }
+        if (tipoEstado) {
+          alert(tipoEstado.value); // Muestra el valor del select de estado
+        }
+
+        try {
+          const response = await axios.post(`/inversiones/all/search`, {
+            codeOrUser:codeOrUser.value,
+            tipoEstado:tipoEstado.value
+          });
+          const inversiones = response.data;
+          if(inversiones){
+            alert("Se ha encontrado algo")
+          }
+          const tablaUsuarios = document.getElementById('tablaBodyInversiones');
+          const modalUsuariosInversiones = document.getElementById('modalsComprobantesPagosUsuariosId');
+          let usersTable = "";
+          let modalsInversionesUsuarios = "";
+
+          inversiones.forEach((inversion, index) => {
+            const { usersTable: row, modalsInversionesUsuarios: modal } = getInversion(inversion, index + 1);
+            usersTable += row;
+            modalsInversionesUsuarios += modal;
+          });
+
+          tablaUsuarios.innerHTML = usersTable;
+          modalUsuariosInversiones.innerHTML = modalsInversionesUsuarios;
+        } catch (error) {
+          console.error("Error al obtener inversiones:", error);
+        }
+      };
+      
+      const getInversiones = async () => {
+        try {
+          const response = await axios.get('/inversiones/all');
+          const inversiones = response.data;
+
+          const tablaUsuarios = document.getElementById('tablaBodyInversiones');
+          const modalUsuariosInversiones = document.getElementById('modalsComprobantesPagosUsuariosId');
+          let usersTable = "";
+          let modalsInversionesUsuarios = "";
+
+          inversiones.forEach((inversion, index) => {
+            const { usersTable: row, modalsInversionesUsuarios: modal } = getInversion(inversion, index + 1);
+            usersTable += row;
+            modalsInversionesUsuarios += modal;
+          });
+
+          tablaUsuarios.innerHTML = usersTable;
+          modalUsuariosInversiones.innerHTML = modalsInversionesUsuarios;
+        } catch (error) {
+          console.error("Error al obtener inversiones:", error);
+        }
+      };
+
+      const getRetiros = async () => {
+        try {
+            const response = await axios.get('/api/retiros/admin/pending/all');
+            console.log("response-->>", response, "<<--");
+            
+            const retiros = response.data;
+            console.log("retiros---->>", retiros, "<<----");
+            
+            const tablaUsuarios = document.getElementById('tablaBodyRetiros');
+            let usersTable = "";
+            retiros.forEach((retiro, index) => {
+                usersTable += `
+                <tr>
+                    <td>${index + 1}.</td>
+                    <td>${retiro.retiro.estado}</td>
+                    <td>${retiro.retiro.valor}</td>
+                    <td>${retiro.creado_por.nombre_completo}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#modalUsuario${retiro.retiro._id}">
+                            Ver usuario
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- Modal -->
+                <div class="modal fade" id="modalUsuario${retiro.retiro._id}" tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalUsuarioLabel">Información del Usuario</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Nombre:</strong> ${retiro.creado_por.nombre_completo}</p>
+                                
+                                <p><strong>Tipo de cuenta:</strong></p>
+                                <ul class="list-unstyled">
+                                    ${retiro.creado_por.cuenta.bancaria ? `<li><i class="bi bi-bank"></i> Cuenta Bancaria</li>` : ""}
+                                    ${retiro.creado_por.cuenta.digitales ? `<li><i class="bi bi-phone"></i> Cuenta Digital (${retiro.creado_por.cuentas_digitales.tipo_cuenta})</li>` : ""}
+                                </ul>
+
+                                <p><strong>Número de cuenta:</strong> ${retiro.creado_por.cuentas_digitales.numero_cuenta}</p>
+
+                                <label for="comprobantePago${retiro.retiro._id}" class="form-label">Adjuntar comprobante:</label>
+                                <input type="file" id="comprobantePago${retiro.retiro._id}" class="form-control">
+                            </div>
+                            <div class="modal-footer">
+                                <button onclick="aprobarRetiro(this)" data-id="${retiro.retiro._id}" data-inversion-id="${retiro.inversionId}" data-mes-id="${retiro.mesId}" data-estado-id="aprobado" type="button" class="btn btn-success">
+                                  Aprobar
+                                </button>
+                                <button onclick="aprobarRetiro(this)" data-id="${retiro.retiro._id}" data-inversion-id="${retiro.inversionId}" data-mes-id="${retiro.mesId}" data-estado-id="denegado" type="button" class="btn btn-danger">
+                                  Denegar
+                                </button>
+                                 <button type="button" class="btn btn-secondary" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            tablaUsuarios.innerHTML = usersTable;
+        } catch (error) {
+            console.error("Error al obtener retiros:", error);
+        }
+    };
+
+      
+    // Función para manejar la aprobación del retiro
+    const aprobarRetiro = async (attribute) => {
+      try {
+        let retiroId = attribute.getAttribute('data-id');
+        let inversionId = attribute.getAttribute('data-inversion-id');
+        let mesId = attribute.getAttribute('data-mes-id');
+        let estado_aprobado = attribute.getAttribute('data-estado-id');
+        let inputFile = document.getElementById(`comprobantePago${retiroId}`);
+
+        if (!inputFile || inputFile.files.length === 0) {
+            return alert("Por favor, sube un comprobante de pago antes de aprobar.");
+        }
+
+        let estado = estado_aprobado == 'aprobado' ? 'Pago realizado' : 'Cancelado';
+        let formData = new FormData();
+        formData.append("estado", estado);
+        formData.append("comprobante_foto_recibo_pago", inputFile.files[0]); // Adjunta el archivo
+
+        // Llamada a la API con archivo adjunto
+        const response = await axios.put(`/api/retiros/${inversionId}/${mesId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        alert(response.data.message);
+        location.reload(); // Recarga la página para ver los cambios
+      } catch (error) {
+        console.error("Error al aprobar retiro:", error);
+        alert("Hubo un error al procesar el retiro. Inténtalo de nuevo.");
+      }
+  };
+
+
+      
+      const aprovarInversion = async (attribute) => {
+        let inversionId = attribute.getAttribute('data-inversion-id');
+        Swal.fire({
+          title: "Selecciona el nuevo estado",
+          html: `
+            <select id="estadoSelect" class="swal2-select">
+              <option value="revision">Revisión</option>
+              <option value="activa">Activa</option>
+              <option value="rechazo">Rechazada</option>
+              <option value="terminada">Terminada</option>
+            </select>
+          `,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Guardar",
+          cancelButtonText: "Cancelar",
+          preConfirm: () => {
+            return document.getElementById("estadoSelect").value;
+          }
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            let nuevoEstado = result.value; // Capturar el valor seleccionado
+            try {
+              const { data } = await axios.put(`/inversiones/${inversionId}`, { estado: nuevoEstado });
+              Swal.fire("Cambio guardado", `Estado cambiado a: ${nuevoEstado}`, "success");
+              getInversiones();
+            } catch (error) {
+              Swal.fire("Error", "No se pudo cambiar el estado", "error");
+            }
+          }
+        });
+      };      
+
+      const aprovarRetiro = async (attribute) => {
+        let retiroId = attribute.getAttribute('data-retiro-id');
+        const { value: estadoSeleccionado } = await Swal.fire({
+          title: "Selecciona el nuevo estado",
+          html: `
+            <select id="estadoSelect" class="swal2-select">
+              <option value="pendiente">Pendiente</option>
+              <option value="aprobado">Aprobado</option>
+              <option value="terminado">Terminado</option>
+            </select>
+          `,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Siguiente",
+          cancelButtonText: "Cancelar",
+          preConfirm: () => {
+            return document.getElementById("estadoSelect").value;
+          }
+        });
+
+        if (!estadoSeleccionado) return; // Si canceló, no hacer nada
+
+        let formData = new FormData();
+        formData.append("estado", estadoSeleccionado);
+
+        if (estadoSeleccionado === "aprobado") {
+          const { value: file } = await Swal.fire({
+            title: "Sube el comprobante",
+            html: `<input type="file" id="fileInput" class="swal2-input">`,
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonText: "Subir y Guardar",
+            cancelButtonText: "Cancelar",
+            preConfirm: () => {
+              const fileInput = document.getElementById("fileInput").files[0];
+              if (!fileInput) {
+                Swal.showValidationMessage("Debes seleccionar un archivo");
+                return false;
+              }
+              return fileInput;
+            }
+          });
+
+          if (!file) return; // Si canceló, no hacer nada
+          formData.append("comprobante_foto_recibo_pago", file);
+        }
+
+        try {
+          const { data } = await axios.put(`/api/retiros/${retiroId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+          Swal.fire("Cambio guardado", `Estado cambiado a: ${estadoSeleccionado}`, "success");
+          getRetiros();
+        } catch (error) {
+          Swal.fire("Error", "No se pudo cambiar el estado", "error");
+        }
+      };
+      // --
+  
+    
+      // Cargar configuración al cargar la página
+    window.onload = () => {
+      getRetiros();
+      obtenerUsuarios();
+      getInversiones();
+    };
+
+  </script>
+  <!--scripts dev ./ -->

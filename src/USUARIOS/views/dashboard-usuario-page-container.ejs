@@ -1,0 +1,1360 @@
+<style>
+  .modal-body img {
+    display: block; /* Hace que la imagen sea un bloque y pueda centrarse */
+    max-width: 100%; /* Limita el ancho máximo al tamaño del contenedor */
+    max-height: 70vh; /* Limita la altura máxima para evitar que se salga de la pantalla */
+    margin: 0 auto; /* Centra la imagen horizontalmente */
+    object-fit: contain; /* Asegura que la imagen se escale correctamente */
+  }
+</style>
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6"><h3 class="mb-0">Panel de control</h3></div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/usuarios/dashboard">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Panel de control <i class="bi bi-gear-fill"></i></li>
+                </ol>
+            </div>
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>
+<!--modal configurar metodo de pago /. -->
+
+<!-- Modal Configurar Método de Pago -->
+<div class="modal fade" id="modalConfigMetodoPago" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalConfigMetodoPagoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalConfigMetodoPagoLabel">Panel de configuración</h1>
+        <button type="button" class="btn-close" id="modalConfigMetodoPagoButtonClose" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulario para configurar método de pago -->
+         <h4>Configura tu cuenta para recibir tus pagos.</h4>
+         <ul>
+            <li>Este será el medio donde se enviara la consignación cuando solicites el retiro de tus ingresos.</li>
+            <li>Asegúrate de que la información que ingreses corresponda al titular del método de pago, ya que es necesaria para procesar correctamente las consignaciones.</li>
+         </ul>
+        <form id="formMetodoPago">
+            <!-- Formulario para datos personales -->
+            <div id="datos_personales" class="row">
+              <div class="mb-3">
+                <label for="nombre_completo" class="form-label">Nombre completo</label>
+                <input type="text" class="form-control" id="nombre_completo">
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="tipoIdentificacion" class="form-label">Tipo de identificación</label>
+                  <select class="form-select" id="tipoIdentificacion" required>
+                    <option value="">Selecciona un tipo</option>
+                    <option value="C.C">C.C</option>
+                    <option value="NIT">NIT</option>
+                    <option value="PASSPORT">PASAPORTE</option>
+                  </select>
+                  <div class="invalid-feedback">Selecciona un tipo de cuenta válido.</div>
+                </div>
+              </div>
+              
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="numero_identificacion" class="form-label">Número de identificación</label>
+                  <input type="text" class="form-control" id="numero_identificacion" required>
+                  <div class="invalid-feedback">Este campo es obligatorio.</div>
+                </div>
+              </div>
+            </div>
+          <div class="mb-3">
+            <label for="tipoPago" class="form-label">Tipo de Pago</label>
+            <select class="form-select" id="tipoPago" required>
+              <option value="">Selecciona un tipo de pago</option>
+              <option value="digitales">Digitales</option>
+              <option value="bancaria">Bancaria</option>
+            </select>
+            <div class="invalid-feedback">Selecciona un tipo de pago válido.</div>
+          </div>
+          
+          <!-- Formulario para cuentas digitales -->
+          <div id="cuenta_digitales" style="display: none;">
+            <div class="mb-3">
+              <label for="tipoPagoDigital" class="form-label">Tipo de Cuenta Digital</label>
+              <select class="form-select" id="tipoPagoDigital" required>
+                <option value="">Selecciona un tipo</option>
+                <option value="nequi">Nequi</option>
+                <option value="daviplata">Daviplata</option>
+                <option value="ahorro_a_la_mano">Ahorro a la Mano</option>
+              </select>
+              <div class="invalid-feedback">Selecciona un tipo de cuenta válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="numeroPago" class="form-label">Número o Cuenta</label>
+              <input type="text" class="form-control" id="numeroPago" required>
+              <div class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+          </div>
+
+          <!-- Formulario para cuentas bancarias -->
+          <div id="cuenta_bancarias" style="display: none;">
+            <div class="mb-3">
+              <label for="nombre_de_entidad_bancaria" class="form-label">Nombre de la Entidad Bancaria</label>
+              <input type="text" class="form-control" id="nombre_de_entidad_bancaria">
+            </div>
+            <div class="mb-3">
+              <label for="tipoCuentaBancaria" class="form-label">Tipo de Cuenta Bancaria</label>
+              <select class="form-select" id="tipoCuentaBancaria" required>
+                <option value="">Selecciona un tipo</option>
+                <option value="Ahorros">Ahorros</option>
+                <option value="Corriente">Corriente</option>
+              </select>
+              <div class="invalid-feedback">Selecciona un tipo de cuenta válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="numeroCuentaBancaria" class="form-label">Número de Cuenta Bancaria</label>
+              <input type="text" class="form-control" id="numeroCuentaBancaria" required>
+              <div class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+          </div>
+          
+        </form>
+        
+        <!-- Spinner -->
+        <div id="spinner" class="text-center" style="display: none;">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnGuardarMetodoPago" onclick="postConfigMetodoPago()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--modal ./ -->
+
+<!-- modal informativo de planes de inversion /. -->
+<!-- Modal -->
+<div class="modal fade" id="modalPlanesInversion" tabindex="-1" aria-labelledby="modalPlanesInversionLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalPlanesInversionLabel">Planes de inversión</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="row ">
+          <div class="col-lg-12 mb-2">
+              <div class="card">
+                  <div class="card-body p-4">
+                      <h3 class="fw-bold">Plan Básico</h3>
+                      <p>Invierte entre $50,000 y $199,900 y recibe un 10% cada 30 días.</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-12 mb-2">
+              <div class="card">
+                  <div class="card-body p-4">
+                      <h3 class="fw-bold">Plan Avanzado</h3>
+                      <p>Invierte entre $200,000 y $499,900 y recibe un 15% cada 30 días.</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-12 mb-2">
+              <div class="card">
+                  <div class="card-body p-4">
+                      <h3 class="fw-bold">Plan Premium</h3>
+                      <p>Invierte entre $500,000 y $1,000,000 y recibe un 20% cada 30 días.</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modal informativo de planes de inversion ./ -->
+
+<!-- modal historial de inversiones /. -->
+<!-- Modal -->
+<div class="modal fade" id="modalHistorialInversion" tabindex="-1" aria-labelledby="modalHistorialInversionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalHistorialInversionLabel">
+          <i class="bi bi-file-earmark-text me-2"></i>Historial de Inversión
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          
+          <!-- Tarjeta: Por Cobrar -->
+          <div class="col-lg-6 mb-4">
+            <div class="card border-warning">
+              <div class="card-body" >
+                <h5 class="card-title d-flex align-items-center">
+                  <i class="bi bi-cash-coin me-2"></i><strong>Por Cobrar</strong>
+                </h5>
+                <br>
+                <p class="card-text">Aquí podrás ver los montos pendientes por cobrar de tus inversiones actuales.</p>
+                <div class="row" id="historialPagosPendientesId">
+                  <ul class="list-unstyled">
+                    <li><i class="bi bi-currency-dollar text-warning"></i> $40,000 pendientes por cobrar</li>
+                    <li><i class="bi bi-currency-dollar text-warning"></i> $10,000 pendientes por cobrar</li>
+                  </ul>
+                  <div class="mt-3">
+                    <h6 class="text-muted">Total por cobrar</h6>
+                    <h2 class="text-warning">
+                      <i class="bi bi-currency-dollar me-2"></i> <strong>600.000</strong>
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tarjeta: Ganancias Finales -->
+          <div class="col-lg-6 mb-4">
+            <div class="card border-success">
+              <div class="card-body">
+                <h5 class="card-title d-flex align-items-center">
+                  <i class="bi bi-trophy me-2"></i><strong>Ganancias Finales</strong>
+                </h5>
+                <br>
+                <p class="card-text">Estas son las ganancias obtenidas hasta ahora de tus inversiones.</p>
+                <div class="row" id="historialGananciasId">
+                  <ul class="list-unstyled">
+                    <li><i class="bi bi-currency-dollar text-success"></i> $40,000 en ganancias obtenidas</li>
+                    <li><i class="bi bi-currency-dollar text-success"></i> $10,000 en ganancias obtenidas</li>
+                  </ul>
+                  <div class="mt-3">
+                    <h6 class="text-muted">Total ganancias</h6>
+                    <h2 class="text-success">
+                      <i class="bi bi-currency-dollar me-2"></i> <strong>500.000</strong>
+                    </h2>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal End -->
+<!-- modal historial de inversiones ./ -->
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+
+        <!--begin::Row-->
+        <div class="row">
+          <!--end::Col-->
+            <div class="col-lg-3 col-6">
+              <!--begin::Small Box Widget 4-->
+              <div class="small-box text-bg-light">
+                <div class="inner" id="info_config_metodo_pago_id">
+                    <h3>Configurar</h3>
+                    <p>Metodos de pagos <i style="color:#ffc107" class="bi bi-exclamation-circle-fill"></i></p>
+                </div>
+                <i class="bi bi-gear-fill small-box-icon"></i>
+                <a data-bs-toggle="modal" data-bs-target="#modalConfigMetodoPago" onclick="getConfigMetodoPago()"
+                    class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                    + info <i class="bi bi-link-45deg"></i>
+                </a>
+              </div>
+              <!--end::Small Box Widget 4-->
+            </div>
+          <!--end::Col-->
+          <!--begin::Col-->
+          <div class="col-lg-3 col-6">
+            <!--begin::Small Box Widget 1-->
+            <div class="small-box text-bg-primary">
+                <div class="inner">
+                    <h3>Planes</h3>
+                    <p>Planes de inversion</p>
+                </div>
+                <i class="bi bi-bar-chart-line small-box-icon"></i>
+                <a href="#"  data-bs-toggle="modal" data-bs-target="#modalPlanesInversion" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    + info <i class="bi bi-link-45deg"></i>
+                </a>
+            </div>
+            <!--end::Small Box Widget 1-->
+          </div>
+          <!--end::Col-->
+
+          <div class="col-lg-3 col-6">
+              <!--begin::Small Box Widget 2-->
+              <div class="small-box text-bg-secondary">
+                  <div class="inner" id="info_count_inversiones_id">
+                      <h3>0<sup class="fs-5"></sup></h3>
+                      <p>Inversiones</p>
+                  </div>
+                  <i class="bi bi-bookmark-heart-fill small-box-icon"></i>
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#modalConfirmacion" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                      + info <i class="bi bi-link-45deg"></i>
+                  </a>
+              </div>
+              <!--end::Small Box Widget 2-->
+          </div>
+          <!--end::Col-->
+
+          <div class="col-lg-3 col-6">
+              <!--begin::Small Box Widget - Withdrawals-->
+              <div class="small-box text-bg-success">
+                  <div class="inner" id="cobros_por_cobrar_id">
+                      <h3>$1,250</h3> <!-- Monto total retirado -->
+                      <p>Retiros efectuados</p>
+                  </div>
+                  <i class="bi bi-cash-stack small-box-icon"></i> <!-- Icono de dinero -->
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#modalHistorialInversion" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    + info <i class="bi bi-link-45deg"></i>
+                  </a>
+              </div>
+              <!--end::Small Box Widget - Withdrawals-->
+          </div>
+          
+        </div>
+        <!--end::Row-->
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-header">
+                    <h4 class="card-title">
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfirmacion">
+                            <i class="bi bi-plus-circle"></i> Crear Inversión
+                        </button>
+                    </h4>
+                    <div class="card-tools">
+                      <ul class="pagination pagination-sm float-end">
+                        <li class="page-item"><a class="page-link" href="#">«</a></li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">»</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body p-0">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th style="width: 10px">#</th>
+                          <th><i class="bi bi-cash-stack"></i> Monto</th>
+                          <th><i class="bi bi-bar-chart-line"></i> Rendimiento</th>
+                          <th><i class="bi bi-bar-chart-line"></i> Fecha</th>
+                          <th><i class="bi bi-info-circle"></i> Estado</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tablaBodyInversiones">
+                        <tr class="align-middle">
+                          <td>1.</td>
+                          <td>Update software</td>
+                          <td>
+                            <div class="progress progress-xs">
+                              <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                            </div>
+                          </td>
+                          <td><span class="badge text-bg-danger">55%</span></td>
+                          <td>Update software</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- Start col -->
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h4 class="card-title">
+                    Cobros y retiros
+                  </h4>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                  <div class="row m-2" id="retiros_id">
+                    <div class="col-md-12 col-sm-12 col-12">
+                      <div class="info-box">
+                        <span class="info-box-icon bg-success"><i class="bi bi-wallet"></i></span>
+                        <div class="info-box-content">
+                          <span class="info-box-text"> lunes, 30, 2025, En proceso</span>
+                          <span class="info-box-number">Retiro de inversion: $ 30.000</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                      </div>
+                      <!-- /.info-box -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- end col -->
+            <!-- Start col -->
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                   
+                </div>
+            </div>
+            <!-- /.Start col -->
+        </div>
+        <!-- /.row (main row) -->
+
+        <!-- modal formulario para crear inversion /. -->
+        <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="modalConfirmacionLabel"><i class="bi bi-plus-circle-fill text-primary"></i> Crear Inversión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <!-- Spinner -->
+                <div id="spinner" class="d-none text-center">
+                    <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p>Procesando...</p>
+                </div>
+                <div class="row">
+                  <h2>Inversiones a:</h2>
+                  <div class="col-md-4 col-sm-4 col-4">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-info"><i class="bi bi-cash-stack"></i></span>
+                      <div class="info-box-content">
+                        <span class="info-box-text">3 meses, Ganancia</span>
+                        <span class="info-box-number"> 5% por mes</span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-md-4 col-sm-4 col-4">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-success"><i class="bi bi-cash-stack"></i></span>
+        
+                      <div class="info-box-content">
+                        <span class="info-box-text"> 6 meses, Ganancia</span>
+                        <span class="info-box-number"> 15% por mes</span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-md-4 col-sm-4 col-4">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-success"><i class="bi bi-cash-stack"></i></span>
+        
+                      <div class="info-box-content">
+                        <span class="info-box-text">12 meses, Ganancia</span>
+                        <span class="info-box-number"> 20% por mes</span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <div class="row">
+                  <div class="col-md-12 col-sm-12 col-12">
+                    <div class="info-box bg-warning">
+                      <span class="info-box-icon"><i class="bi bi-safe"></i></span>
+        
+                      <div class="info-box-content">
+                        <span class="info-box-text">Depositar a:</span>
+                        <span class="info-box-number">Nequi: 315-209-87-39, Bancolombia: 3915-2039-837-3390</span>
+        
+                        <div class="progress">
+                          <div class="progress-bar" style="width: 70%"></div>
+                        </div>
+                        <span class="progress-description">
+                          El deposito debe ser efectuado y depositado a la cuenta de la empresa, y subir comprobante
+                        </span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                </div>
+                <!-- Formulario -->
+                <form id="crearInversionForm">
+                    <div class="mb-3">
+                      <label for="monto" class="form-label">
+                        <i class="bi bi-cash-coin text-warning"></i> Valor de Inversión
+                      </label>
+                      <select class="form-select" id="monto" name="monto" onchange="handleMontoChange()" required>
+                        <option value="">Seleccione cantidad a invertir</option>
+                        <option value="50000">$ 50,000</option>
+                        <option value="100000">$ 100,000</option>
+                        <option value="150000">$ 150,000</option>
+                        <option value="Otro">Otro Valor (mayor a $50,000)</option>
+                      </select>
+                    </div>
+                    <div class="mb-3 d-none" id="inputOtroMontoContainer">
+                      <label for="otroMonto" class="form-label">
+                        <i class="bi bi-cash text-danger"></i> Ingrese un Monto Personalizado
+                      </label>
+                      <input type="number" class="form-control" id="otroMonto" name="otroMonto" placeholder="Monto mayor a $50,000" min="50001">
+                    </div>
+                    <div class="mb-3">
+                      <label for="">
+                        Cantidad de meses
+                      </label>
+                      <select class="form-select" id="cantidad_plasos_mes" name="cantidad_plasos_mes" required>
+                        <option value="">Seleccione cantidad de meses</option>
+                        <option value="3">3 meses</option>
+                        <option value="6">6 meses</option>
+                        <option value="12">12 meses</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="comprobante" class="form-label">
+                          <i class="bi bi-upload text-primary"></i> Comprobante de Pago
+                      </label>
+                      <input type="file" class="form-control" id="comprobante" name="comprobante_foto_recibo_pago" accept="image/*">
+                    </div>
+                </form>
+                </div>
+                <div class="modal-footer">
+                <button onclick="crearInversion()" id="btn-crear-inversion-id" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Crear Inversión
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cerrar
+                </button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- modal formulario para crear inversion ./ -->
+        <!-- listado de modals para abrir comprobante de pago /. -->
+        <div id="modalsComprobantesPagos">
+
+        </div>
+        <!-- listado de modals para abrir comprobante de pago ./ -->
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::App Content-->
+
+<!--scripts dev /. -->
+  <!-- bootstrap-icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- sweetalert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    
+    const progress_bar_fechas = (fechaFinal) => {
+      const fechaActual = new Date(); // Fecha actual
+      const final = new Date(fechaFinal); // Fecha final desde la base de datos
+
+      // Validar si la fecha final ya pasó o está en el presente
+      if (fechaActual >= final) {
+        return { dias_faltantes: 0, proceso_calculado: 100 }; // Progreso completo
+      }
+
+      // Calcular el rango total desde hoy hasta la fecha final
+      const rangoTotalMs = final - fechaActual; // Milisegundos totales restantes
+      const rangoTotalDias = rangoTotalMs / (1000 * 60 * 60 * 24); // Convertir a días
+
+      // Definir un rango máximo de días para el 0%
+      const rangoMaximoDias = 30; // Supongamos que 60 días es el límite para 0%
+
+      // Si faltan más de `rangoMaximoDias`, el progreso es 0%
+      if (rangoTotalDias > rangoMaximoDias) {
+        return { dias_faltantes: Math.ceil(rangoTotalDias), proceso_calculado: 0 };
+      }
+
+      // Calcular el porcentaje restante basado en el rango total y máximo
+      const porcentajeProgreso = ((rangoMaximoDias - rangoTotalDias) / rangoMaximoDias) * 100;
+      return { dias_faltantes: Math.ceil(rangoTotalDias), proceso_calculado: Math.round(porcentajeProgreso) };
+    };
+    //const resultado1 = progress_bar_fechas('2025-02-28');
+    //console.log("faltan: " + resultado1.dias_faltantes + " días, progreso: " + resultado1.proceso_calculado + "%");
+
+    const obtenerInversiones = async () => {
+      try {
+        const response = await axios.get('/inversiones/user');
+        const inversiones = response.data;
+        console.log('inversiones - usuario')
+        console.log(inversiones)
+        console.log('inversiones - usuario--<')
+        const tabla = document.getElementById('tablaBodyInversiones');
+        tabla.innerHTML = '';
+        const modalsComprobantesPagos = document.getElementById('modalsComprobantesPagos');
+        let modalsComprobantesPagosAll = ""
+        modalsComprobantesPagos.innerHTML = '';
+        // estado: { type: String, default: 'En proceso' }, // 'Proceso de Pago' , 'Pago realizado'.
+        let estado_inversion_mes_botones = ""
+        let info_count_inversiones_id = document.getElementById('info_count_inversiones_id')
+      
+
+        let diVhistorialGanancias = document.getElementById('historialGananciasId')
+        let historialGananciasTodas = ''
+        let gananciasAprobadas = ''
+        let gananciasAprobadasTotal = 0
+        
+        if(inversiones==''){
+          return console.log("No existen inversiones")
+        }
+        let count_inversiones = 0
+        if(inversiones){
+          info_count_inversiones_id.innerHTML = `
+            <h3>${count_inversiones}<sup class="fs-5"></sup></h3>
+            <p>Inversiones</p>
+          `
+        }
+        //gananciasAprobadas = ''
+        inversiones.forEach((inversion, index) => {
+          count_inversiones++
+          let mesesInvesrion = ""
+          let valorMontoTotal = 0
+          let montoValor = inversion.monto
+          let btn_active_retiro = ''
+          let porcentajeTotal = 0
+          let inversionesCountTotal = 0
+          //let index = 1
+          inversion.mes_valor_inversion.forEach((mes_valor_inversion, index)=>{
+            index++
+            inversionesCountTotal++
+            const resultado1 = progress_bar_fechas(mes_valor_inversion.mes);
+            porcentajeTotal += resultado1.proceso_calculado
+            //mes_valor_inversion.valor
+            if(mes_valor_inversion.estado=='En proceso'&&resultado1.dias_faltantes == 0&&resultado1.proceso_calculado!=100){
+              //valorMontoTotal += mes_valor_inversion.valor
+            } else if(mes_valor_inversion.estado=='Solicitud de pago') {
+              btn_active_retiro = 'disabled'
+            } else if(mes_valor_inversion.estado=='Pago realizado') {
+              gananciasAprobadas += `<li><i class="bi bi-currency-dollar text-success"></i> ${mes_valor_inversion.valor} en ganancias obtenidas</li>`
+              gananciasAprobadasTotal+=mes_valor_inversion.valor
+              btn_active_retiro = 'disabled'
+            }
+
+            if(resultado1.dias_faltantes == 0&&resultado1.proceso_calculado==100){
+              valorMontoTotal += mes_valor_inversion.valor
+            } 
+            
+
+            //estado: { type: String, default: 'En proceso', enum: ['En proceso', 'Solicitud de pago', 'Pago realizado', 'Cancelado'] },
+            let estado_inversion_mes = {
+              "En proceso": `<span class="badge bg-info">${mes_valor_inversion.estado}</span>`,
+              "Solicitud de pago": `<span class="badge bg-warning">${mes_valor_inversion.estado}</span>`,
+              "Pago realizado": `<span class="badge bg-success">${mes_valor_inversion.estado}</span>`,
+              "Cancelado": `<span class="badge bg-danger">${mes_valor_inversion.estado}</span>`
+            };
+
+            //estado: { type: String, enum: ['revision', 'activa', 'rechazo', 'terminada'], default: 'revision' }
+            estado_inversion_mes_botones = {
+              "revision": `<span class="badge bg-warning">${inversion.estado}</span>`,
+              "activa": `<span class="badge bg-success">${inversion.estado}</span>
+                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalComprobantePago${inversion.usuarioId}${inversion._id}">
+                    Ver Rendimiento
+                </button>
+              `,
+              "rechazo": `<span class="badge bg-danger">${mes_valor_inversion.estado}</span>`
+            };
+
+            console.log("faltan: " + resultado1.dias_faltantes + " días, progreso: " + resultado1.proceso_calculado + "%");
+            if(resultado1.dias_faltantes > 0 || mes_valor_inversion.valor===0){
+              btn_active_retiro = 'disabled'
+            }
+
+            if(resultado1.dias_faltantes == 0 || mes_valor_inversion.valor===0){
+              btn_active_retiro = ''
+            }
+
+            if(mes_valor_inversion.estado==="Pago realizado"){
+              btn_active_retiro = 'disabled'
+            }
+            if(mes_valor_inversion.estado==="Solicitud de pago"){
+              btn_active_retiro = 'disabled'
+            }
+
+           
+
+            mesesInvesrion += `
+            <tr>
+              <td>${index}.</td>
+              <td>${fechaFormatear(mes_valor_inversion.mes)}</td>
+              <td>
+                ${estado_inversion_mes[mes_valor_inversion.estado]}
+              </td>
+              <td>
+                ${resultado1.dias_faltantes} días
+              </td>
+              <td>
+                ${(mes_valor_inversion.estado=='En proceso'&&resultado1.proceso_calculado!=100?0:formatoPesos(mes_valor_inversion.valor))}
+              </td>
+              <td>
+                <div class="progress progress-xs">
+                  <div class="progress-bar progress-bar-danger" style="width: ${resultado1.proceso_calculado}%"></div>
+                </div>
+                <span class="badge bg-danger">${resultado1.proceso_calculado}%</span>
+              </td>
+              <td><button type="button" onclick="postRetiros(this)" data-inversion-id="${inversion._id}" data-mes-id="${mes_valor_inversion._id}" data-valor-total="${(mes_valor_inversion.estado=='En proceso'&&resultado1.proceso_calculado!=100?0:formatoPesos(mes_valor_inversion.valor))}" class="btn btn-success"  ${btn_active_retiro}>Hacer retiros <i class="bi bi-cash-stack"></i></button></td>
+            </tr>`
+          })
+
+          index ++
+          modalsComprobantesPagosAll += `
+          <!--modal Comprobante de pago-->
+            <div class="modal fade" id="modalComprobantePago${inversion.usuarioId}${inversion._id}" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmacionLabel">Comprobante de pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Inversion inicial: ${formatoPesos(montoValor)}, Capital actual acomulado: ${formatoPesos(montoValor+valorMontoTotal)}</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body p-0">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">Mes # </th>
+                              <th>Fecha proyectada</th>
+                              <th>Estado</th>
+                              <th style="width: 40px">Dias restantes</th>  
+                              <th>Capital acomulado</th>
+                              <th>Avance</th>
+                              <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${mesesInvesrion}
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                    <!-- imagen del Comprobante de pago -->
+                    <!--<img src="../../uploads/comprobantes/${inversion.usuarioId}/${inversion.comprovante_foto_recibo_pago}">-->
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `
+          //let index = 1
+          tabla.innerHTML += `
+            <tr class="align-middle">
+              <td>${index}.</td>
+              <td>${formatoPesos(inversion.monto)}</td>
+              <td>
+                  ${formatoPesos(montoValor+valorMontoTotal)}
+                  <div class="progress progress-xs">
+                      <div class="progress-bar progress-bar-danger" style="width: ${(porcentajeTotal/inversionesCountTotal).toFixed(2)}%"></div>
+                  </div>
+                  <span class="badge text-bg-danger">${(porcentajeTotal/inversionesCountTotal).toFixed(2)}%</span>
+                  <span class="badge text-bg-warning">${inversionesCountTotal} meses </span>
+              </td>
+              <td>
+                ${fechaFormatear(inversion.createdAt)}
+              </td>
+              <td>
+                
+                ${estado_inversion_mes_botones[inversion.estado]}
+              </td>
+            </tr>`;
+        });
+        
+
+
+        historialGananciasTodas = `
+        <ul class="list-unstyled">
+          ${gananciasAprobadas}
+        </ul>
+        <div class="mt-3">
+          <h6 class="text-muted">Total ganancias</h6>
+          <h2 class="text-success">
+            <i class="bi bi-currency-dollar me-2"></i> <strong>${gananciasAprobadasTotal}</strong>
+          </h2>
+        </div>
+        `
+        diVhistorialGanancias.innerHTML = historialGananciasTodas
+        modalsComprobantesPagos.innerHTML = modalsComprobantesPagosAll
+      } catch (error) {
+        console.error("Error al obtener inversiones:", error);
+      }
+    };
+
+
+    const handleMontoChange = () => {
+      const montoSelect = document.getElementById('monto');
+      const otroMontoContainer = document.getElementById('inputOtroMontoContainer');
+      const otroMontoInput = document.getElementById('otroMonto');
+
+      if (montoSelect.value === "Otro") {
+        otroMontoContainer.classList.remove('d-none');
+        otroMontoInput.required = true;
+      } else {
+        otroMontoContainer.classList.add('d-none');
+        otroMontoInput.required = false;
+        otroMontoInput.value = ""; // Limpiar el valor si se cambia la selección
+      }
+    };
+
+    const crearInversion = async () => {
+      const spinner = document.getElementById('spinner');
+      const form = document.getElementById('crearInversionForm');
+      const botonCrear = document.getElementById('btn-crear-inversion-id');
+
+      // Elementos
+      const montoSelect = document.getElementById('monto');
+      const otroMontoInput = document.getElementById('otroMonto');
+      const cantidadPlazosInput = document.getElementById('cantidad_plasos_mes');
+      const comprobanteInput = document.getElementById('comprobante');
+
+      // Valores
+      const monto = montoSelect.value === "Otro" ? otroMontoInput.value : montoSelect.value;
+      const cantidad_plasos_mes = cantidadPlazosInput.value;
+      const comprobante = comprobanteInput.files[0];  // Archivo
+      
+      // Validación
+      let formIsValid = true;
+      const elementsToValidate = [cantidadPlazosInput, comprobanteInput];
+
+      // Validar monto
+      if (montoSelect.value === "Otro") {
+          elementsToValidate.push(otroMontoInput);
+          if (!otroMontoInput.value.trim()) {
+              otroMontoInput.classList.add('is-invalid');
+              formIsValid = false;
+          }
+      } else {
+          elementsToValidate.push(montoSelect);
+          if (!montoSelect.value.trim()) {
+              montoSelect.classList.add('is-invalid');
+              formIsValid = false;
+          }
+      }
+
+      // Validar resto de campos
+      elementsToValidate.forEach(element => {
+          element.classList.remove('is-invalid', 'is-valid');
+          const isEmpty = element.type === 'file' 
+              ? !element.files.length 
+              : !element.value.trim();
+
+          if (isEmpty) {
+              element.classList.add('is-invalid');
+              formIsValid = false;
+          } else {
+              element.classList.add('is-valid');
+          }
+      });
+
+      if (!formIsValid) {
+        Toast.fire({ icon: "error", title: "Campos incompletos o inválidos" });
+        return;
+      }
+
+       // Configurar FormData correctamente
+      const formData = new FormData();
+      formData.append('monto', monto);
+      formData.append('cantidad_plasos_mes', cantidad_plasos_mes);
+      formData.append('comprobante_foto_recibo_pago', comprobante);
+
+      try {
+        const { data } = await axios.post('/inversiones', formData);
+
+        // Mostrar éxito
+        spinner.classList.add('d-none');
+        // Mostrar éxito
+        Toast.fire({
+            icon: "success",
+            title: "¡Inversión creada exitosamente!"
+        });
+        // Reinicio completo del formulario
+        form.reset();
+        // 1. Remover clases de validación
+        const allInputs = form.querySelectorAll('input, select, textarea');
+        allInputs.forEach(input => {
+            input.classList.remove('is-invalid', 'is-valid');
+        });
+           // 2. Ocultar campo de otro monto
+        otroMontoInput.classList.add('d-none'); // Asumiendo que usas Bootstrap
+        otroMontoInput.value = ''; // Limpiar valor por si acaso
+        // 3. Limpiar input de archivo visualmente
+        comprobanteInput.value = ''; 
+
+        // 4. Resetear select a estado inicial
+        montoSelect.selectedIndex = 0; // Seleccionar primera opción
+
+        // 5. Cerrar modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalConfirmacion'));
+        modal.hide();
+
+        // 6. Actualizar lista
+        obtenerInversiones();
+      } catch (error) {
+        console.error("Error al crear inversión:", error);
+        Toast.fire({
+          icon: "error",
+          title: "Hubo un error al crear la inversión."
+        });
+      } finally {
+        // Restaurar el formulario
+        spinner.classList.add('d-none');
+        botonCrear.classList.remove('d-none');
+        botonCrear.disabled = false;
+        form.classList.remove('d-none');
+      }
+    };
+    
+    // Función para formatear un número como pesos
+    const formatoPesos = (numero) => {
+      return `$${numero.toLocaleString('es-CO')}`;
+    };
+
+    // Función para convertir fecha al formato "Lunes - 12 /01/ 2025"
+    const fechaFormatear = (fecha) => {
+      const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+      // Crear la fecha ajustando la hora a UTC para evitar desplazamientos
+      const fechaObj = new Date(fecha);
+
+      // Asegurarte de trabajar con la fecha correctamente (en UTC o local)
+      const dia = diasSemana[fechaObj.getUTCDay()]; // Cambiar a getUTCDay() para asegurar que siempre sea UTC
+      const diaMes = fechaObj.getUTCDate().toString().padStart(2, '0'); // Día del mes en UTC
+      const mes = meses[fechaObj.getUTCMonth()]; // Mes en UTC
+      const anio = fechaObj.getUTCFullYear(); // Año en UTC
+
+      return `${dia} - ${diaMes} / ${mes} / ${anio}`;
+    };
+
+    // Función para calcular si pasó un mes desde una fecha y aumentar el monto un 2%
+    const incrementoInversionMes = (fecha, monto) => {
+      const fechaObj = new Date(fecha);
+      const fechaActual = new Date();
+      
+      // Calcular la diferencia en meses
+      const diferenciaMeses = fechaActual.getMonth() - fechaObj.getMonth() 
+                            + (12 * (fechaActual.getFullYear() - fechaObj.getFullYear()));
+
+      // Si pasó un mes o más, aumentar el monto un 2%
+      if (diferenciaMeses >= 1) {
+        const incremento = monto * 0.02; // 2% del monto
+        monto += incremento;
+      }
+      
+      return formatoPesos(monto); // Retornar el monto formateado
+    };
+
+    // Ejemplo de uso
+    console.log(formatoPesos(1000000)); // $1,000,000
+    console.log(fechaFormatear('2025-12-12')); // Jueves - 11 / 12 / 2025
+    console.log(incrementoInversionMes('2023-11-24', 1000000)); // $1,020,000 (si ha pasado más de un mes)
+
+    /**
+     * CRUD CONFIGURACION METODO DE PAGO /. --
+     * */
+
+     // Controlar la visibilidad de los formularios
+    document.getElementById('tipoPago').addEventListener('change', function () {
+      const tipoPago = this.value;
+      const cuentaDigitales = document.getElementById('cuenta_digitales');
+      const cuentaBancarias = document.getElementById('cuenta_bancarias');
+      
+      // Ocultar ambos formularios por defecto
+      cuentaDigitales.style.display = 'none';
+      cuentaBancarias.style.display = 'none';
+
+      // Mostrar el formulario correspondiente según el tipo seleccionado
+      if (tipoPago === 'digitales') {
+        cuentaDigitales.style.display = 'block';
+      } else if (tipoPago === 'bancaria') {
+        cuentaBancarias.style.display = 'block';
+      }
+    });
+
+    const getConfigMetodoPago = async () => {
+      const userId = "<%= user.id %>";
+      try {
+        const response = await axios.get(`/api/usuarios/config/${userId}`);
+        const metodoPago = response.data;
+        console.log("metodoPago--->")
+        console.log(metodoPago)
+        console.log("metodoPago---<")
+
+        if (metodoPago) {            
+            document.getElementById('nombre_completo').value =  metodoPago.nombre_completo
+            document.getElementById('numero_identificacion').value = metodoPago.numero_identificacion
+          // Verificar si tiene cuenta bancaria o digital
+          if (metodoPago.cuenta.digitales) {
+            document.getElementById('tipoPago').value = 'digitales';
+            document.getElementById('cuenta_digitales').style.display = 'block';
+            document.getElementById('cuenta_bancarias').style.display = 'none';
+            
+            // Asignar los valores de las cuentas digitales
+            document.getElementById('tipoPagoDigital').value = metodoPago.cuentas_digitales.tipo_cuenta;
+            document.getElementById('numeroPago').value = metodoPago.cuentas_digitales.numero_cuenta;
+          } else if (metodoPago.cuenta.bancaria) {
+            document.getElementById('tipoPago').value = 'bancaria';
+            document.getElementById('cuenta_digitales').style.display = 'none';
+            document.getElementById('cuenta_bancarias').style.display = 'block';
+            
+            // Asignar los valores de las cuentas bancarias
+            document.getElementById('nombre_de_entidad_bancaria').value = metodoPago.cuentas_bancaria.nombre_de_entidad_bancaria;
+            document.getElementById('tipoCuentaBancaria').value = metodoPago.cuentas_bancaria.tipo_cuenta;
+            document.getElementById('numeroCuentaBancaria').value = metodoPago.cuentas_bancaria.numero_cuenta;
+          }
+
+          let info_config_metodo_pago = document.getElementById('info_config_metodo_pago_id')
+
+          info_config_metodo_pago.innerHTML= `
+           <h3>Configurar</h3>
+            <p>Metodos de pagos 
+              <i style="color: rgb(4, 121, 82);" class="bi bi-check-circle-fill"></i>
+            </p>
+          `
+          document.getElementById('btnGuardarMetodoPago').innerText = 'Actualizar Cambios';
+          document.getElementById('btnGuardarMetodoPago').setAttribute('data-method', 'PUT');
+          let element = document.getElementById('modalConfigMetodoPagoButtonClose');
+          if (element.hasAttribute('hidden')) {
+            element.removeAttribute('hidden');
+          } else {
+            //alert("no tiene")
+              //element.setAttribute('hidden', true);
+          }
+        } else {
+          // Limpiar campos si no existe configuración
+          document.getElementById('formMetodoPago').reset();
+          document.getElementById('btnGuardarMetodoPago').innerText = 'Guardar Cambios';
+          document.getElementById('btnGuardarMetodoPago').setAttribute('data-method', 'POST');
+          let element = document.getElementById('modalConfigMetodoPagoButtonClose');
+          if (element.hasAttribute('hidden')) {
+              element.removeAttribute('hidden');
+          } else {
+              element.setAttribute('hidden', true);
+          }
+        }
+      } catch (error) {
+        if (error.response?.status === 404) {
+          // Mostrar mensaje de usuario no encontrado y abrir modal
+          Toast.fire({ icon: 'warning', title: 'Usuario no encontrado. Por favor configura tu método de pago.' });
+          document.getElementById('formMetodoPago').reset();
+          document.getElementById('btnGuardarMetodoPago').innerText = 'Guardar Cambios';
+          document.getElementById('btnGuardarMetodoPago').setAttribute('data-method', 'POST');
+
+          // Abrir el modal automáticamente
+          const modal = new bootstrap.Modal(document.getElementById('modalConfigMetodoPago'));
+          modal.show();
+          let element = document.getElementById('modalConfigMetodoPagoButtonClose');
+          if (element.hasAttribute('hidden')) {
+              element.removeAttribute('hidden');
+          } else {
+              element.setAttribute('hidden', true);
+          }
+
+        } else {
+          // Mostrar mensaje genérico para otros errores
+          Toast.fire({ icon: 'error', title: 'Error al cargar método de pago' });
+        }
+      }
+    };
+
+
+    const postConfigMetodoPago = async () => {
+      const tipoPago = document.getElementById('tipoPago');
+      const spinner = document.getElementById('spinner');
+      let metodoPagoData = {};
+
+      // Validar si se seleccionó un tipo de pago
+      if (!tipoPago.value) {
+        tipoPago.classList.add('is-invalid');
+        Toast.fire({ icon: 'warning', title: 'Por favor selecciona un tipo de pago' });
+        return;
+      }
+      const nombre_completo = document.getElementById('nombre_completo')
+      const numero_identificacion = document.getElementById('numero_identificacion')
+      // Remover la clase de validación
+      tipoPago.classList.remove('is-invalid');
+      
+      if (!nombre_completo.value || !numero_identificacion.value) {
+        nombre_completo.classList.add('is-invalid');
+        numero_identificacion.classList.add('is-invalid');
+        Toast.fire({ icon: 'warning', title: 'Por favor llena todos los campos de informacion de usuario' });
+        return;
+      }
+
+      // Obtener datos dependiendo del tipo de pago seleccionado
+      if (tipoPago.value === 'digitales') {
+        const tipoPagoDigital = document.getElementById('tipoPagoDigital');
+        const numeroPago = document.getElementById('numeroPago');
+
+        // Validar que se haya llenado la información para cuentas digitales
+        if (!tipoPagoDigital.value || !numeroPago.value) {
+          tipoPagoDigital.classList.add('is-invalid');
+          numeroPago.classList.add('is-invalid');
+          Toast.fire({ icon: 'warning', title: 'Por favor llena todos los campos de cuenta digital' });
+          return;
+        }
+
+        // Remover las clases de validación
+        tipoPagoDigital.classList.remove('is-invalid');
+        numeroPago.classList.remove('is-invalid');
+
+        metodoPagoData = {
+          tipo: tipoPago.value,
+          tipo_cuenta: tipoPagoDigital.value,
+          numero_cuenta: numeroPago.value,
+          nombre_completo:nombre_completo.value,
+          numero_identificacion:numero_identificacion.value
+        };
+      } else if (tipoPago.value === 'bancaria') {
+        const nombreEntidadBancaria = document.getElementById('nombre_de_entidad_bancaria');
+        const tipoCuentaBancaria = document.getElementById('tipoCuentaBancaria');
+        const numeroCuentaBancaria = document.getElementById('numeroCuentaBancaria');
+
+        // Validar que se haya llenado la información para cuentas bancarias
+        if (!nombreEntidadBancaria.value || !tipoCuentaBancaria.value || !numeroCuentaBancaria.value) {
+          nombreEntidadBancaria.classList.add('is-invalid');
+          tipoCuentaBancaria.classList.add('is-invalid');
+          numeroCuentaBancaria.classList.add('is-invalid');
+          Toast.fire({ icon: 'warning', title: 'Por favor llena todos los campos de cuenta bancaria' });
+          return;
+        }
+
+        // Remover las clases de validación
+        nombreEntidadBancaria.classList.remove('is-invalid');
+        tipoCuentaBancaria.classList.remove('is-invalid');
+        numeroCuentaBancaria.classList.remove('is-invalid');
+
+        nombre_completo.classList.remove('is-invalid');
+        numero_identificacion.classList.remove('is-invalid');
+
+        metodoPagoData = {
+          tipo: tipoPago.value,
+          nombre_de_entidad_bancaria: nombreEntidadBancaria.value,
+          tipo_cuenta: tipoCuentaBancaria.value,
+          numero_cuenta: numeroCuentaBancaria.value,
+          nombre_completo:nombre_completo.value,
+          numero_identificacion:numero_identificacion.value
+        };
+      }
+
+      // Mostrar spinner mientras se envían los datos
+      spinner.style.display = 'block';
+
+      try {
+        // Realizar la solicitud POST al backend
+        const response = await axios.post('/api/usuarios/config', metodoPagoData);
+        Toast.fire({ icon: 'success', title: response.data.message || 'Método de pago configurado correctamente' });
+
+        // Cerrar el modal después de un éxito
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalConfigMetodoPago'));
+        modal.hide();
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: error.response?.data?.message || 'Error al guardar método de pago' });
+      } finally {
+        // Ocultar spinner
+        spinner.style.display = 'none';
+      }
+    };
+
+
+      const putConfigMetodoPago = async ()=>{
+
+      }
+
+      const getConfigMetodoPagoById = async ()=>{
+
+      }
+
+     /**
+     * CRUD CONFIGURACION METODO DE PAGO ./ --
+     * */
+
+     /**
+      * CRUD RETIROS USUARIO BY ID - /. - 
+      * **/
+      const postRetiros = async (attribute) => {
+        // Obtener valores de los atributos data-*
+        let inversionId = attribute.getAttribute('data-inversion-id');
+        let mesId = attribute.getAttribute('data-mes-id');
+        let valorTotal = attribute.getAttribute('data-valor-total'); // Asegúrate que sea el nombre correcto
+
+        // Mostrar opciones al usuario
+        let opcion = prompt(
+            `Seleccione una opción:\n\n` +
+            `1️⃣ - Retirar GANANCIAS\n` +
+            `2️⃣ - No retirar nada\n`,
+            "1"
+        );
+
+        // esta valor esta de esta forma $30.000
+        // valorTotal esta en miles y toca quitar el simbolo pesos del inicio ya que lo quiero guardar como entero 
+
+        // Definir qué acción tomar según la opción elegida
+        let retirar;
+        switch (opcion) {
+            case "1":
+                retirar = "ganancias";
+                break;
+            case "2":
+                alert("No se retirará nada.");
+                return; // Salir de la función sin hacer la solicitud
+            default:
+                alert("Opción no válida. Operación cancelada.");
+                return; // Salir si la opción es inválida
+        }
+
+        // Confirmar la decisión antes de enviar la solicitud
+        let confirmar = confirm(`¿Está seguro de que desea retirar ${retirar}? - Saldo: ${valorTotal}`);
+        if (!confirmar) {
+            alert("Operación cancelada.");
+            return;
+        }
+
+        try {
+           const response = await axios.post(`/api/retiros/${inversionId}/${mesId}`);
+           alert("Retiro exitoso: " + response.data.message);
+        } catch (error) {
+          alert("Error al procesar el retiro.");
+          console.error(error);
+        }
+    };
+
+    const getRetiros = async () => {
+      try {
+          const response = await axios.get(`/api/retiros/pending`);
+          console.log("Retiros all: " + response.data);
+          let divRetiros = document.getElementById('retiros_id');
+          let allRetiros = "";
+
+          // Mapeo de estados a clases de Bootstrap para los badges
+          let estado_cobros_mes = {
+            'En proceso': "badge bg-warning",
+            'Solicitud de pago': "badge bg-info",
+            'Pago realizado': "badge bg-success",
+            'Cancelado': "badge bg-danger"
+          };
+
+          let historialPagosPendientes = document.getElementById('historialPagosPendientesId')
+          
+          divHistorialPagosPendiente = ''
+          divHistorialPagosPendienteList = ''
+          let cobros_por_cobrar = 0
+          let divCobrosPorCobrar = document.getElementById('cobros_por_cobrar_id')
+          let totalPorCobrar = 0
+          response.data.forEach(retiro => {
+              // Obtener la clase correspondiente al estado
+              let badgeClass = estado_cobros_mes[retiro.retiro.estado];
+              if(retiro.retiro.estado==="Solicitud de pago"){
+                cobros_por_cobrar += retiro.retiro.valor
+              }
+
+              if(retiro.retiro.estado==="Solicitud de pago"){
+                totalPorCobrar+=retiro.retiro.valor
+                divHistorialPagosPendienteList += `
+                <li><i class="bi bi-currency-dollar text-warning"></i> ${retiro.retiro.valor} pendientes por cobrar</li>`
+              }
+              
+              allRetiros += `
+                <div class="col-md-12 col-sm-12 col-12">
+                  <div class="info-box">
+                    <span class="info-box-icon bg-success"><i class="bi bi-wallet"></i></span>
+                    <div class="info-box-content">
+                      <span class="info-box-text">Mes de cobro: ${retiro.retiro.mes} 
+                        <span class="${badgeClass}">${retiro.retiro.estado}</span>
+                      </span>
+                      <span class="info-box-number">Retiro de inversión: ${retiro.retiro.valor}</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>`;
+          });
+          //nicolas
+          divCobrosPorCobrar.innerHTML = `
+            <div class="inner" id="cobros_por_cobrar_id">
+              <h3>$${cobros_por_cobrar}</h3> <!-- Monto total retirado -->
+              <p>Historial de pagos y cobros</p>
+            </div>`
+
+
+
+          divRetiros.innerHTML = allRetiros;
+          divHistorialPagosPendiente = `
+            <ul class="list-unstyled">
+              ${divHistorialPagosPendienteList}
+            </ul>
+            <div class="mt-3">
+              <h6 class="text-muted">Total por cobrar</h6>
+              <h2 class="text-warning">
+                <i class="bi bi-currency-dollar me-2"></i> <strong>${totalPorCobrar}</strong>
+              </h2>
+            </div>
+            `
+
+          historialPagosPendientes.innerHTML = divHistorialPagosPendiente
+
+      } catch (error) {
+          //alert("Error al ver todos los retiros");
+          console.error(error);
+      }
+  };
+      /**
+      * CRUD RETIROS USUARIO BY ID - ./ - 
+      * **/
+
+    // Cargar configuración al cargar la página
+    window.onload = () => {
+      getConfigMetodoPago();
+      obtenerInversiones();
+      getRetiros();
+      notificaciones()
+    };
+</script>
+<!--scripts dev ./ -->

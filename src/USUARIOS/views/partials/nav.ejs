@@ -1,0 +1,151 @@
+<nav class="app-header navbar navbar-expand bg-body">
+    <!--begin::Container-->
+    <div class="container-fluid">
+      <!--begin::End Navbar Links-->
+      <ul class="navbar-nav ms-auto">
+        <!--begin::Notifications Dropdown Menu-->
+        <li class="nav-item dropdown" id="div_notificaciones_id">
+          <a class="nav-link" data-bs-toggle="dropdown" href="#">
+            <i class="bi bi-bell-fill"></i>
+            <span class="navbar-badge badge text-bg-warning">15</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end" >
+            <span class="dropdown-item dropdown-header">20 Notifications</span>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+              <i class="bi bi-envelope me-2"></i> 4 new messages
+              <span class="float-end text-secondary fs-7">3 mins</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+              <i class="bi bi-envelope me-2"></i> 4 new messages
+              <span class="float-end text-secondary fs-7">3 mins</span>
+            </a>
+            <div class="dropdown-divider"></div>
+          </div>
+        </li>
+        <!--end::Notifications Dropdown Menu-->
+        <!--begin::Fullscreen Toggle-->
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+            <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+            <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+          </a>
+        </li>
+        <!--end::Fullscreen Toggle-->
+        <!--begin::User Menu Dropdown-->
+        <li class="nav-item dropdown user-menu">
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            <img
+              src="../../public/dist/assets/img/user2-160x160.jpg"
+              class="user-image rounded-circle shadow"
+              alt="User Image"
+            />
+            <span class="d-none d-md-inline"><%= user.email %></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+            <!--begin::User Image-->
+            <li class="user-header text-bg-primary" id="perfil_usuario_id">
+              <img
+                src="../../public/dist/assets/img/user2-160x160.jpg"
+                class="rounded-circle shadow"
+                alt="User Image"
+              />
+              <p>
+                <%= user.email %>
+                <small><%= user.rol || 'Usuario' %> </small>
+              </p>
+            </li>
+            <!--end::User Image-->
+            <!--begin::Menu Footer-->
+            <li class="user-footer">
+              <a href="#" class="btn btn-default btn-flat">Configurar</a>
+              <a href="#" onclick="cerrarSession()" class="btn btn-default btn-flat float-end">Salir</a>
+            </li>
+            <!--end::Menu Footer-->
+          </ul>
+        </li>
+        <!--end::User Menu Dropdown-->
+      </ul>
+      <!--end::End Navbar Links-->
+    </div>
+    <!--end::Container-->
+  </nav>
+
+  <script>   
+    const cerrarSession = async () => {
+      try {
+        // Mostrar mensaje de confirmación al usuario
+        const confirmar = window.confirm('¿Estás seguro de que deseas salir?');
+        
+        if (confirmar) {
+          // Si el usuario confirma, enviar la solicitud de cierre de sesión
+          const { data, status } = await axios.post('/api/auth/logout');
+          
+          if (status === 200) {
+            // Redirigir al usuario al login tras cerrar sesión
+            window.location.href = '/auth/login';
+          } else {
+            console.log('Error al cerrar sesión:', data.message);
+          }
+        } else {
+          // Si el usuario cancela, no hacer nada
+          console.log('El usuario canceló el cierre de sesión.');
+        }
+      } catch (error) {
+        console.error('Error en el proceso de cierre de sesión:', error);
+      }
+    };
+  
+    
+
+    const notificaciones = async ()=>{
+      try {
+        const response = await axios.get('/inversiones/user');
+        const inversiones = response.data;
+        console.log('inversiones - usuario notifiaciones -->')
+        console.log(inversiones)
+        console.log('inversiones - usuario notifiaciones--<')        
+        let count_pagados = 0
+        let count_solitudes = 0
+        inversiones.forEach((inversion, index) => {
+          inversion.mes_valor_inversion.forEach((mes_valor_inversion, index)=>{
+            if(mes_valor_inversion.estado==="Pago realizado"){
+              count_pagados++
+            }
+            if(mes_valor_inversion.estado==="Solicitud de pago"){
+              count_solitudes ++
+            }
+          })
+        });
+        
+        let total_notificaciones = count_pagados + count_solitudes
+        let div_notificaciones_id = document.getElementById('div_notificaciones_id')
+        div_notificaciones_id.innerHTML = `
+        <a class="nav-link" data-bs-toggle="dropdown" href="#">
+          <i class="bi bi-bell-fill"></i>
+          <span class="navbar-badge badge text-bg-warning">${total_notificaciones}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end" >
+          <span class="dropdown-item dropdown-header">${total_notificaciones} Notificaciones</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="bi bi-envelope me-2"></i> ${count_pagados} Nuevos pagos realizados
+            <span class="float-end text-secondary fs-7">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="bi bi-envelope me-2"></i> ${count_solitudes} Nuevas solicitudes de pago
+            <span class="float-end text-secondary fs-7">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+        </div>`
+      } catch (error) {
+        console.error("Error al obtener inversiones:", error);
+      }
+    }
+
+    window.onload = () => {
+      notificaciones()
+    };
+  </script>
