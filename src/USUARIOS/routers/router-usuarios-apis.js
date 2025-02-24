@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { 
+import { 
   getUsuarios, 
   getUsuarioById, 
   getConfigurarMetodoPagoUsuarioById, 
   createConfigurarMetodoPagoUsuario, 
   updateConfigurarMetodoPagoUsuario, 
   deleteConfigurarMetodoPagoUsuario 
-} = require('../controllers/usuariosController');
+} from '../controllers/usuariosController.js'; // Importa desde la ruta correcta
 
 // Rutas de administración (solo accesibles para administradores)
 router.get('/admin', getUsuarios); // Obtener la lista de usuarios (solo admin)
@@ -19,4 +19,4 @@ router.post('/config', createConfigurarMetodoPagoUsuario); // Crear método de p
 router.put('/config', updateConfigurarMetodoPagoUsuario); // Actualizar método de pago del usuario autenticado
 router.delete('/config', deleteConfigurarMetodoPagoUsuario); // Eliminar método de pago del usuario autenticado
 
-module.exports = router;
+export default router; // Aquí usamos export default

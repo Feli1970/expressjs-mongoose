@@ -1,6 +1,7 @@
-const Usuario = require('../models/Usuario');
+//const Usuario = require('../models/Usuario');
+import Usuario from '../models/Usuario.js'; // Importa el modelo de Usuario
 
-exports.getUsuarios = async (req, res) => {
+export const getUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.find();
     res.status(200).json(usuarios);
@@ -9,7 +10,7 @@ exports.getUsuarios = async (req, res) => {
   }
 };
 
-exports.getUsuarioById = async (req, res) => {
+export const getUsuarioById = async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.params.id);
     if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -25,7 +26,7 @@ exports.getUsuarioById = async (req, res) => {
  * @param {Object} res - Respuesta HTTP
  * @returns {Object} Método de pago del usuario
  */
-exports.getConfigurarMetodoPagoUsuarioById = async (req, res) => {
+export const getConfigurarMetodoPagoUsuarioById = async (req, res) => {
   try {
     const usuario = await Usuario.findOne({ "authId": req.params.id });
     if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -51,7 +52,7 @@ exports.getConfigurarMetodoPagoUsuarioById = async (req, res) => {
  * @param {Object} res - Respuesta HTTP
  * @returns {Object} Mensaje de éxito o error
  */
-exports.createConfigurarMetodoPagoUsuario = async (req, res) => {
+export const createConfigurarMetodoPagoUsuario = async (req, res) => {
   const { tipo } = req.body;
 
   // Validación de entrada
@@ -116,7 +117,7 @@ exports.createConfigurarMetodoPagoUsuario = async (req, res) => {
  * @param {Object} res - Respuesta HTTP
  * @returns {Object} Mensaje de éxito o error
  */
-exports.updateConfigurarMetodoPagoUsuario = async (req, res) => {
+export const updateConfigurarMetodoPagoUsuario = async (req, res) => {
   const { tipo, tipo_cuenta, numero_cuenta, nombre_de_entidad_bancaria } = req.body;
 
   // Validación de entrada
@@ -156,7 +157,7 @@ exports.updateConfigurarMetodoPagoUsuario = async (req, res) => {
  * @param {Object} res - Respuesta HTTP
  * @returns {Object} Mensaje de éxito o error
  */
-exports.deleteConfigurarMetodoPagoUsuario = async (req, res) => {
+export const deleteConfigurarMetodoPagoUsuario = async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.session.user.id);
     if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });

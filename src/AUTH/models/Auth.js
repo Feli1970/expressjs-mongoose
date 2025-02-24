@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const authSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -7,4 +7,7 @@ const authSchema = new mongoose.Schema({
   rol: { type: String, enum: ['admin', 'soporte', 'subdirector', 'usuario'], default: 'usuario' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Auth', authSchema);
+// Usamos export default para exportar el modelo
+const Auth = mongoose.model('Auth', authSchema);
+export default Auth;
+

@@ -1,5 +1,5 @@
-const Inversion = require('../models/Inversion');
-const Usuario = require('../../USUARIOS/models/Usuario');
+import Inversion from '../models/Inversion.js'; // Cambiar a import
+import Usuario from '../../USUARIOS/models/Usuario.js'; // Cambiar a import
 
 const sumarMeses = (fecha, meses) => {
   const nuevaFecha = new Date(fecha);
@@ -8,7 +8,7 @@ const sumarMeses = (fecha, meses) => {
 };
 
 // Crear una inversión
-exports.crearInversion = async (req, res) => {
+export const crearInversion = async (req, res) => {
   const { id } = req.session.user || {};
   const { monto, cantidad_plasos_mes: plazoMeses } = req.body;
 
@@ -81,7 +81,7 @@ exports.crearInversion = async (req, res) => {
     });
   }
 };
-exports.getInversionesByUser = async (req, res) => {
+export const getInversionesByUser = async (req, res) => {
   try {
     const usuario = await Usuario.findOne({'authId':req.session.user.id})
     const inversiones = await Inversion.find({ usuarioId: usuario._id }); // Solo inversiones del usuario autenticado
@@ -91,7 +91,7 @@ exports.getInversionesByUser = async (req, res) => {
   }
 };
 
-exports.getInversionByUser = async (req, res) => {
+export const getInversionByUser = async (req, res) => {
   const { id_inversion } = req.params;
   try {
     const usuario = await Usuario.findOne({'authId':req.session.user.id})
@@ -111,7 +111,7 @@ exports.getInversionByUser = async (req, res) => {
 };
 
 // Funciones para el administrador o subdirector
-exports.actualizarEstadoInversion = async (req, res) => {
+export const actualizarEstadoInversion = async (req, res) => {
   const { id_inversion } = req.params;
   const { estado } = req.body;
   try {
@@ -126,7 +126,7 @@ exports.actualizarEstadoInversion = async (req, res) => {
   }
 };
 
-exports.eliminarInversion = async (req, res) => {
+export const eliminarInversion = async (req, res) => {
   const { id_inversion } = req.params;
 
   try {
@@ -139,7 +139,7 @@ exports.eliminarInversion = async (req, res) => {
   }
 };
 
-exports.getTodasInversiones = async (req, res) => {
+export const getTodasInversiones = async (req, res) => {
   try {
     const inversiones = await Inversion.find().populate({
       path: 'usuarioId',
@@ -159,7 +159,7 @@ exports.getTodasInversiones = async (req, res) => {
  * @returns 
  */
 
-  exports.getTodasInversionesSearch = async (req, res) => {
+  export const getTodasInversionesSearch = async (req, res) => {
     const { codeOrUser, tipoEstado } = req.body;
     console.log(req.body)
     try {

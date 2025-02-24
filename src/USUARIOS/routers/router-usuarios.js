@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { isAuthenticated, hasRole } = require('../../_middlewares/authMiddleware');
+import { isAuthenticated, hasRole } from '../../_middlewares/authMiddleware.js'; // Cambio de require a import
 
 // /usuarios/dashboard
 router.get('/dashboard', isAuthenticated, (req, res) => {
@@ -18,4 +18,5 @@ router.get('/admin/dashboard', isAuthenticated, (req, res) => {
     res.render('USUARIOS/views/index', { user: req.session.user, container_page:'dashboard-admin-page-container' });
 });
 
-module.exports = router;
+
+export default router; // Aquí usamos export default

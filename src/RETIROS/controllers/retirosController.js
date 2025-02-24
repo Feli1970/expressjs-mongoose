@@ -1,8 +1,9 @@
-const Inversion = require('../../INVERSIONES/models/Inversion');
-const Usuario = require('../../USUARIOS/models/Usuario');
+import Inversion from '../../INVERSIONES/models/Inversion.js'; // Cambiar a import
+
+import Usuario from '../../USUARIOS/models/Usuario.js'; // Cambiar a import
 
 // Solicitar un retiro
-exports.solicitarRetiro = async (req, res) => {
+export const solicitarRetiro = async (req, res) => {
   const { inversionId, mesId } = req.params;
   const { id } = req.session.user;
 
@@ -29,7 +30,7 @@ exports.solicitarRetiro = async (req, res) => {
 };
 
 // Obtener retiros pendientes para una inversión específica
-exports.getRetirosPendientes = async (req, res) => {
+export const getRetirosPendientes = async (req, res) => {
   const { id } = req.session.user;
   try {
     const usuario = await Usuario.findOne({'authId':id});
@@ -71,7 +72,7 @@ exports.getRetirosPendientes = async (req, res) => {
 };
 
 // Autorizar un retiro
-exports.autorizarRetiro = async (req, res) => {
+export const autorizarRetiro = async (req, res) => {
   const { inversionId, mesId } = req.params;
   const { estado } = req.body;
   const { id } = req.session.user;
@@ -100,7 +101,7 @@ exports.autorizarRetiro = async (req, res) => {
 };
 
 // Obtener retiros pendientes para el administrador
-exports.getRetirosPendientesAdmin = async (req, res) => {
+export const getRetirosPendientesAdmin = async (req, res) => {
   try {
     // Buscar todas las inversiones
     const retiros = await Inversion.find({}).lean();

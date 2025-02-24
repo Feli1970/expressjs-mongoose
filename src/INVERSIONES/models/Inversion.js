@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const rendimientoMesesSchema = new mongoose.Schema({
   mes: { type: String, required: true },
@@ -20,7 +20,8 @@ const inversionSchema = new mongoose.Schema({
   estado: { type: String, enum: ['revision', 'activa', 'rechazo', 'terminada'], default: 'revision' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Inversion', inversionSchema);
+export default mongoose.model('Inversion', inversionSchema); // Usamos export default
+
 
 //[
 //  // cantidad_plasos_mes -- 3, 6, 12 

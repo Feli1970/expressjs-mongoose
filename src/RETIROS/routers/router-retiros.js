@@ -1,12 +1,13 @@
-const express = require('express');
+import express from 'express';
+import { solicitarRetiro, getRetirosPendientes, autorizarRetiro, getRetirosPendientesAdmin } from '../controllers/retirosController.js'; // Usamos import { ... } en vez de require
+import upload from '../../_config/multerFile.js'; // Usamos import en vez de require
+
 const router = express.Router();
-const retirosController = require('../controllers/retirosController');
-const upload = require('../../_config/multerFile');
 
 // Rutas de retiros
-router.post('/:inversionId/:mesId', retirosController.solicitarRetiro); // Solicitar un retiro
-router.get('/pending', retirosController.getRetirosPendientes); // Listar retiros pendientes para una inversión específica
-router.put('/:inversionId/:mesId', upload.single('comprobante_foto_recibo_pago'), retirosController.autorizarRetiro); // Aprobar/rechazar un retiro
-router.get('/admin/pending/all', retirosController.getRetirosPendientesAdmin); // Listar retiros pendientes para el administrador
+router.post('/:inversionId/:mesId', solicitarRetiro); // Solicitar un retiro
+router.get('/pending', getRetirosPendientes); // Listar retiros pendientes para una inversión específica
+router.put('/:inversionId/:mesId', upload.single('comprobante_foto_recibo_pago'), autorizarRetiro); // Aprobar/rechazar un retiro
+router.get('/admin/pending/all', getRetirosPendientesAdmin); // Listar retiros pendientes para el administrador
 
-module.exports = router;
+export default router; // Exportamos el router

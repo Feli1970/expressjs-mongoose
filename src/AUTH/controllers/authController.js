@@ -1,7 +1,7 @@
-const Auth = require('../models/Auth');
-const bcrypt = require('bcryptjs');
+import Auth from '../models/Auth.js'; // Cambiar a import
+import bcrypt from 'bcryptjs'; // Cambiar a import
 
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   const { nombre, email, celular, password } = req.body;
 
   // Eliminar espacios al inicio y al final de los campos
@@ -19,8 +19,8 @@ exports.register = async (req, res) => {
       password: hashedPassword 
     });
 
-     // Almacenar información en la sesión
-     req.session.user = {
+    // Almacenar información en la sesión
+    req.session.user = {
       id: newUser._id,
       nombre: newUser.nombre,
       email: newUser.email,
@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
   // Eliminar espacios al inicio y al final de los campos
@@ -45,19 +45,20 @@ exports.login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(trimmedPassword, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Contraseña incorrecta' });
-  // Almacenar información en la sesión
+
+    // Almacenar información en la sesión
     req.session.user = {
       id: user._id,
       nombre: user.nombre,
       email: user.email
     };
-    res.status(200).json({ message: 'Inicio de sesión exitoso', user:req.session.user });
+    res.status(200).json({ message: 'Inicio de sesión exitoso', user: req.session.user });
   } catch (error) {
     res.status(400).json({ message: 'Error al iniciar sesión', error: error.message });
   }
 };
 
-exports.logout = (req, res) => {
+export const logout = (req, res) => {
   try {
     // Eliminar información del usuario de la sesión
     req.session.destroy((err) => {

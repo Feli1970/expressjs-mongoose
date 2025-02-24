@@ -1,6 +1,6 @@
 // src/middlewares/authMiddleware.js
 // Verificar autenticación
-exports.isAuthenticated = (req, res, next) => {
+  export const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.user) {
       return next();
     }
@@ -8,7 +8,7 @@ exports.isAuthenticated = (req, res, next) => {
   };
   
   // Verificar rol
-  exports.hasRole = (roles) => {
+  export const hasRole = (roles) => {
     return (req, res, next) => {
       if (req.session && req.session.user && roles.includes(req.session.user.rol)) {
         return next();

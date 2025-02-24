@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 // Rutas de paginas de autenticacion
 router.get('/register', (req, res) => {
@@ -17,4 +17,4 @@ router.get('/', (req, res) => {
     res.render('AUTH/views/index', {secciones:"inicio-page", header:true});
 });
 
-module.exports = router;
+export default router; // Aquí usamos export default

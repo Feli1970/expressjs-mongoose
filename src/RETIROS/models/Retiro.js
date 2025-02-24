@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const retiroSchema = new mongoose.Schema({
   monto_retiro: { type: String},
