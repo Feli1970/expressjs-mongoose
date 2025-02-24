@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Faraz Patankar",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "nodemon -r dotenv/config src/index.js",
     "build": "tsc",
